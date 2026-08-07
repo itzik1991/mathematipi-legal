@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>מתמטיפאי</title>
+<meta name="description" content="מתמטיפאי - אפליקציה לתרגול מתמטיקה לקראת הבגרות.">
+<!--
+  Landing page for the GitHub Pages repo itzik1991/mathematipi-legal.
+  Upload beside privacy-policy.html and reset-password.html - the repo root serves a 404 today.
+
+  WHY IT EXISTS: Supabase falls back to the project's "Site URL" whenever a redirect is not on the
+  allow list, and that value is also what confirmation e-mails link to. It is currently
+  http://localhost:3000, which is a dead end on a student's phone. Pointing Site URL at this page
+  makes every fallback land somewhere real instead.
+-->
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    padding: 24px; background: #161209; color: #f4ecda;
+    font-family: Rubik, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  }
+  .card {
+    width: 100%; max-width: 420px; background: #211b12; border: 1px solid #362c1d;
+    border-radius: 20px; padding: 32px 24px; text-align: center;
+  }
+  .pi { font-size: 52px; line-height: 1; margin-bottom: 12px; color: #7b61ff; }
+  h1 { font-size: 24px; font-weight: 800; margin: 0 0 8px; }
+  p { font-size: 15px; line-height: 1.7; color: #bdb3a3; margin: 0 0 24px; }
+  a.link {
+    display: block; padding: 14px 18px; border-radius: 14px; background: #2a2218;
+    border: 1px solid #3d3323; color: #f4ecda; text-decoration: none;
+    font-size: 15px; font-weight: 700; margin-top: 10px;
+  }
+  a.link:hover { border-color: #7b61ff; }
+  .foot { font-size: 12px; color: #6f6858; margin-top: 22px; }
+</style>
+</head>
+<body>
+  <main class="card">
+    <div class="pi" aria-hidden="true">π</div>
+    <h1 id="head">מתמטיפאי</h1>
+    <p id="lead">תרגול מתמטיקה מכיתה ז' ועד הבגרות, עם פאי.</p>
+    <div id="links">
+      <a class="link" href="./privacy-policy.html">מדיניות הפרטיות</a>
+      <a class="link" href="./reset-password.html">איפוס סיסמה</a>
+    </div>
+    <div class="foot">הדף הזה משמש למסמכים ולקישורי חשבון בלבד.</div>
+  </main>
+
+<script>
+// This page is the Supabase "Site URL", so it is also where an ACCOUNT e-mail lands when no more
+// specific redirect applies - most importantly the sign-up confirmation link. Landing a student on
+// "here is the privacy policy" after they confirm their address reads like something went wrong,
+// so say plainly what just happened and send them back to the app.
+(function () {
+  var f = new URLSearchParams(location.hash.slice(1));
+  var type = f.get('type');
+  var head = document.getElementById('head');
+  var lead = document.getElementById('lead');
+  var links = document.getElementById('links');
+
+  if (f.get('error_description')) {
+    head.textContent = 'הקישור אינו תקף';
+    lead.textContent = 'קישורים מהמייל תקפים לזמן מוגבל ולשימוש אחד. אפשר לבקש קישור חדש מתוך האפליקציה.';
+  } else if (type === 'signup' || type === 'email_change' || type === 'magiclink') {
+    head.textContent = 'האימייל אומת ✓';
+    lead.textContent = 'החשבון מוכן. חזרו לאפליקציית מתמטיפאי והתחברו - ההתקדמות שלכם תסונכרן אוטומטית.';
+    links.style.display = 'none';
+  } else if (type === 'recovery') {
+    // a recovery link should hit reset-password.html directly; if it ever lands here instead,
+    // forward it WITH its fragment so the token is not lost
+    location.replace('./reset-password.html' + location.hash);
+  }
+})();
+</script>
+</body>
+</html>
